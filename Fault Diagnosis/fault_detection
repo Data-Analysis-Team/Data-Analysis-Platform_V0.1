@@ -1,0 +1,158 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Sep 22 13:25:51 2017
+
+@author: hxc
+"""
+'''
+TE过程PCA故障检测
+import numpy as np
+np.set_printoptions(threshold=1e6)
+d00_te=np.fromfile('F:/编程/2.python/案例/dataset/TE数据集/d00_te.csv',dtype=float,count=-1,sep=',')
+'''
+'''
+#PCA数据降维
+from sklearn import decomposition
+pca=decomposition.PCA(n_components=num_pc)
+newX=pca.fit_transform(data_train)
+pca.explained_variance_ratio_
+'''
+
+import pandas as pd
+import numpy as np
+import os
+from pandas import Series,DataFrame
+import matplotlib.pyplot as plt
+import matplotlib
+from sklearn import preprocessing 
+
+np.set_printoptions(threshold=1e6)#设置打印数量的阈值
+#导入数据
+def data_input(trainFile):
+    pwd=os.getcwd()
+    os.chdir(os.path.dirname(trainFile))
+    data_train=pd.read_csv(os.path.basename(trainFile))
+    os.chdir(pwd)
+    #print(data_train)
+    return data_train
+
+#归一化处理
+
+'''
+def data_minmax(data):    
+    for i in range(0,X_row,1):
+        for j in range(0,X_col,1):
+            data.iloc[i][j]=(data.iloc[i][j]-data_col_means[j])/data_col_standard_deviation[j]
+    return data
+'''
+#1、导入训练数据和测试数据
+#训练数据
+trainFile="F:/编程/2.python/案例/dataset/TE数据集/d00_te.csv"
+data_train=data_input(trainFile)
+#测试数据
+trainFile1="F:/编程/2.python/案例/dataset/TE数据集/d01_te.csv"
+data_test=data_input(trainFile1)
+#2、数据标准化处理
+#训练数据标准化 测试数据标准化处理
+my_scaler=preprocessing.StandardScaler()
+scaler=my_scaler.fit(data_train)
+
+data_train=scaler.transform(data_train)
+data_test=scaler.transform(data_test)
+X_row=data_train.shape[0]
+X_col=data_train.shape[1]
+
+data_train=pd.DataFrame(data_train)
+data_test=pd.DataFrame(data_test)
+
+'''
+
+data_col_means=data_train.mean(axis=0)
+data_col_standard_deviation=data_train.std(axis=0)
+data_train=data_minmax(data_train)
+#测试数据标准化处理
+data_test=data_minmax(data_test)
+'''
+#3、PCA，求协方差矩阵，并对协方差矩阵进行特征分解
+sigmaXtrain=data_train.cov()
+lamda,T=pd.Series(np.linalg.eig(sigmaXtrain))#lamda从大到小排序
+#lamda_sorted=pd.Series(sorted(lamda,reverse=True))#从大到小排序
+#sorted_indices=np.argsort(lamda)#argsort函数返回的是数组值从小到大的索引值
+#累计贡献率>90的主元个数num_pc
+num_pc=1
+while lamda.cumsum()[num_pc-1]/lamda.cumsum()[X_col-1]<0.9:#cumsum计算前n项累加和
+    num_pc=num_pc+1
+P=T[:,:num_pc]
+#P=T[:,sorted_indices[:-num_pc-1:-1]] #sorted_indices[:-k-1:-1]则利用切片的语法特性，保留了前K大的特征值对应的下标。
+#切片有三个参数[start : end : step]，当step为-1时，表示逆序，从最后一个元素开始，一直到第end+1个元素为止
+
+#4、T2和Q统计量及其控制限
+from scipy import stats  
+T2UCL=num_pc*(X_row-1)*(X_row+1)*stats.f.ppf(0.99,num_pc,X_row-num_pc)/(X_row*(X_row-num_pc))
+theta=np.zeros(3)
+for i in range (1,4):
+    theta[i-1]=sum(np.array(lamda[num_pc:X_col])**i)
+h0=1-2*theta[0]*theta[2]/(3*theta[1]**2)
+ca=stats.norm.ppf(0.99,0,1)
+QUCL=theta[0]*(h0*ca*np.sqrt(2*theta[1])/theta[0]+1+theta[1]*h0*(h0-1)/theta[0]**2)**(1/h0)
+
+
+#T2和SPE统计量
+I=np.eye(X_col)
+T2=np.zeros(X_row)
+Q=np.zeros(X_row)
+lamda1=np.mat(np.diag(lamda))[:num_pc,:num_pc]
+for i in range(1,X_row+1):
+    T2[i-1]=np.mat(np.array(data_test.iloc[i-1,:]))*np.mat(P)*np.mat(np.linalg.inv(lamda1))*np.mat(P).T*np.mat(np.array(data_test.iloc[i-1,:])).T
+    Q[i-1]=np.mat(np.array(data_test.iloc[i-1,:]))*(np.mat(I)-np.mat(P)*np.mat(P).T)*np.mat(np.array(data_test.iloc[i-1,:])).T
+    
+ 
+#5、可视化数据
+#matplotlib.rcParams['font.family']='STSong'#plot中文显示 全局
+plt.subplot2grid((2,1),(0,0))
+plt.plot(T2,'r--')
+plt.hlines(T2UCL,0,1000)
+plt.ylabel("T2",fontproperties='SimHei')#fontproperties 中文显示 局部
+plt.savefig("T2_TE",dpi=600)
+plt.show()
+
+plt.subplot2grid((2,1),(1,0))
+plt.plot(Q,'r--')
+plt.hlines(QUCL,0,1000)
+plt.ylabel("Q",fontproperties='SimHei')#fontproperties 中文显示 局部
+plt.savefig("Q_TE",dpi=600)
+
+'''
+贡献图
+'''
+#1、确定造成失控状态的得分
+S=np.array(np.mat(np.array(data_test.iloc[200,:]))*np.mat(P))
+k=0
+for i in range(num_pc):
+    if S[0][i]**2/lamda[i]>T2UCL/num_pc:
+        k=k+1
+#2.计算每个变量相对于上述失控得分的贡献
+cont=np.zeros((k,X_col))
+for i in range(k):
+    for j in range(X_col):
+        cont[i][j]=np.abs(S[0][i]/lamda[i]*P[j][i]*data_test.iloc[200,j])
+#3.计算每个变量对T2的总贡献
+CONTJ=np.zeros((X_col,1))
+for i in range(X_col):
+    CONTJ[i][0]=sum(cont[:,i])
+#4.计算每个变量对Q的贡献 
+e=np.mat(np.array(data_test.iloc[200,:]))*(np.mat(I)-np.mat(P)*np.mat(P).T)
+contq=np.mat(np.multiply(e, e)).T
+
+#5. 绘制贡献图
+X=np.array(range(1,53))
+plt.subplot2grid((2,1),(0,0))
+plt.bar(X,CONTJ,color='green')
+plt.ylabel("贡献率",fontproperties='SimHei')#fontproperties 中文显示 局部
+plt.savefig("T2_变量",dpi=600)
+plt.show()
+
+plt.subplot2grid((2,1),(1,0))
+plt.bar(X,contq,color='green')
+plt.ylabel("贡献率",fontproperties='SimHei')#fontproperties 中文显示 局部
+plt.savefig("Q_变量",dpi=600)
