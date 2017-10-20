@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %} 
+
+{% block content %}
+<div>{{ wtf.quick_form(form1) }}</div>
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-5">
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">取数</h3>
+    </div>
+    <div class="panel-body">
+        <div>
+		<table class="table table-striped">
+				 <!-- <caption></caption>-->
+				{{table1}}
+		</table>
+		</div>
+    </div>
+</div>
+				
+</div>
+
+
+
+
+
+{% endblock %}

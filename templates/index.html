@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content%}
+<h1>主页</h1>
+
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-xs-12 col-sm-6 col-md-8">
+<div class="panel panel-default">
+	<div class="panel-heading"><h3>系统菜单</h3></div>
+	<div class="panel-body">
+		<p>主要有以下功能
+		</p>
+	</div>
+	<ul class="list-group">
+		<li class="list-group-item">
+			<div class="btn-group">
+
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" >&nbsp&nbsp数据预处理&nbsp&nbsp<span class="caret"></span></button>
+
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="{{'hist'}}">随机采样</a></li>
+					<li><a href="#">异常值处理</a></li>
+					<li><a href="#">缺失值处理</a></li>
+					<li><a href="#">数据标准化</a></li>
+					<li><a href="#">数据离散化</a></li>
+					<li><a href="#">数据光滑</a></li>
+					<li><a href="#">其他</a></li>
+				</ul>
+			</div>
+		</li>
+				<li class="list-group-item">
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">&nbsp&nbsp&nbsp&nbsp特征处理&nbsp&nbsp&nbsp&nbsp<span class="caret"></span></button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">主成分分析</a></li>
+					<li><a href="#">特征重要性</a></li>
+					<li><a href="#">特征提取</a></li>
+					<li><a href="#">其他</a></li>
+				</ul>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">&nbsp&nbsp&nbsp&nbsp统计分析&nbsp&nbsp&nbsp&nbsp<span class="caret"></span></button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">描述性统计</a></li>
+					<li><a href="#">频率分布</a></li>
+					<li><a href="#">相关性分析</a></li>
+					<li><a href="#">T检验</a></li>
+					<li><a href="#">卡方检验</a></li>
+					<li><a href="#">其他</a></li>
+				</ul>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp回归&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span class="caret"></span></button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">线性回归</a></li>
+					<li><a href="#">多项式回归</a></li>
+					<li><a href="#">神经网络回归</a></li>
+					<li><a href="#">随机森林回归</a></li>
+					<li><a href="#">逻辑回归</a></li>
+					<li><a href="#">CART回归</a></li>
+					<li><a href="#">其他</a></li>
+				</ul>
+			</div>
+		</li>
+		<li class="list-group-item">
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">&nbsp&nbsp&nbsp&nbsp需求预测&nbsp&nbsp&nbsp&nbsp<span class="caret"></span></button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">数据导入</a></li>
+					<li><a href="#">历史与预测数据审查</a></li>
+					<li><a href="#">异常订单检测</a></li>
+					<li><a href="#">创建统计预测</a></li>
+					<li><a href="#">预测模型评估</a></li>
+					<li><a href="#">协同预测</a></li>
+				</ul>
+			</div>
+		</li>
+				<li class="list-group-item">
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp其他&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<span class="caret"></span></button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">其他</a></li>
+				</ul>
+			</div>
+		</li>
+
+	</ul>
+</div>
+</div>
+</div>
+</div>
+{%endblock%}

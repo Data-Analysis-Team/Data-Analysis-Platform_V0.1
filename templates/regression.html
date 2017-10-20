@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %} 
+
+{% block content %}
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading"><h3 class="panel-title">线性回归</h3></div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-6">
+							{{wtf.quick_form(form_multipleSelect)}}
+							<br>
+							选择的自变量为：
+							<br>
+							{{multiple_selected}}
+						</div>
+						<div class="col-md-6">
+							{{wtf.quick_form(form3)}}
+							<br>
+							选择的因变量为：
+							{{single_selected}}
+							<br>
+							回归系数项：
+							{{a}}
+							<br>
+							回归常数项：
+							{{b}}
+							<br>
+							SSE：
+							{{r}}
+							<br>
+							R²：
+							{{R}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading"><h3 class="panel-title">多项式回归</h3></div>
+				<div class="panel-body">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading"><h3 class="panel-title">神经网络回归</h3></div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-6">
+							{{wtf.quick_form(form_multipleSelect)}}
+							<br>
+							选择的自变量为：
+							<br>
+							{{multiple_selected}}
+						</div>
+						<div class="col-md-6">
+							{{wtf.quick_form(form3)}}
+							<br>
+							选择的因变量为：
+							{{single_selected}}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-1">
+						</div>
+						<div class="col-md-6">
+							{{wtf.quick_form(form_neural)}}
+						</div>
+						<div class="col-md-5">
+							计算用时：
+							<br>
+							{{time_span}}
+							<br>
+							SSE：
+							<br>
+							{{SSE}}
+							<br>
+							R²：
+							<br>
+							{{R_neuro}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading"><h3 class="panel-title">随机森林回归</h3></div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-6">
+							{{wtf.quick_form(form_RF)}}
+						</div>
+						<div class="col-md-6">
+							计算用时：
+							<br>
+							{{time_span_RF}}
+							<br>
+							R²：
+							<br>
+							{{R_RF}}
+							<br>
+							R²：
+							<br>
+							{{R_GBDT}}
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+{% endblock %}
