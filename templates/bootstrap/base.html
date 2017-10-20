@@ -1,0 +1,35 @@
+{% block doc -%}  <!-- doc：整个HTML文档（开始）-->
+<!DOCTYPE html>
+<html{% block html_attribs %}{% endblock html_attribs %}>
+{%- block html %}   <!--html：<html>标签中的内容（开始）-->
+  <head>
+    {%- block head %} <!--head：<head>标签中的内容（开始）-->
+    <title>{% block title %}{{title|default}}{% endblock title %}</title>
+
+    {%- block metas %}<!--metas：一组<meta>标签-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no">  <!--禁止数字识别为电话号码-->
+    {%- endblock metas %}
+
+    {%- block styles %}<!--styles:层叠样式表定义-->
+    <!-- Bootstrap -->
+    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
+    {%- endblock styles %}
+    {%- endblock head %}<!--head：<head>标签中的内容（结束）-->
+  </head>
+  <body{% block body_attribs %}{% endblock body_attribs %}> <!--body_attribs:<body>标签的属性-->
+    {% block body -%}<!--body：<body>标签中的内容（开始）-->
+    {% block navbar %}<!--navbar:用户定义的导航条-->
+    {%- endblock navbar %}
+    {% block content -%}<!--content：用户定义的页面内容-->
+    {%- endblock content %}
+
+    {% block scripts %}<!--scripts：文档底部的JavaScript声明-->
+    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
+    {%- endblock scripts %}
+    {%- endblock body %}<!--body：<body>标签中的内容（结束）-->
+  </body>
+{%- endblock html %}<!--html：<html>标签中的内容（结束）-->
+</html>
+{% endblock doc -%}<!--doc：整个HTML文档（结束）-->
