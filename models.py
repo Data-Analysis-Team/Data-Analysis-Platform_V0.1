@@ -1,7 +1,10 @@
 from wtforms.validators import DataRequired
+from flask_wtf.file import FileAllowed, FileRequired
 from wtforms import TextField, StringField,SubmitField,TextAreaField,IntegerField,BooleanField,\
-RadioField,SelectField,SelectMultipleField
+RadioField,SelectField,SelectMultipleField,FileField
 from flask_wtf import FlaskForm as Form
+import statsmodels.api as sm
+import numpy as np
 import pandas as pd
 tasks=[
        {
@@ -23,7 +26,7 @@ train=[
 
 data_num=0
 data=[]
-excel_data=[]
+
 samples=[]
 hist_selected_column=""
 Selected_1_default_item=0
@@ -162,16 +165,28 @@ class Get_Data():
 
 class Demand_Forcast_dataload(Form):
     excel_path=StringField('EXCEL文件路径',[DataRequired()],render_kw={\
-                                "style":"width:300px"})
-    start_year=IntegerField('开始年份',[DataRequired()],render_kw={\
-                                "style":"width:50px"})
-    start_month=IntegerField('开始月份',[DataRequired()],render_kw={\
-                                "style":"width:50px"})
-    end_year=IntegerField('结束年份',[DataRequired()],render_kw={\
-                                "style":"width:50px"})
-    end_month=IntegerField('结束月份',[DataRequired()],render_kw={\
-                                "style":"width:50px"})
+                             "style":"width:300px"})
+    
+    #start_year=IntegerField('开始年份',[DataRequired()],render_kw={\
+    #                           "style":"width:70px"})
+    #start_month=IntegerField('开始月份',[DataRequired()],render_kw={\
+    #                          "style":"width:70px"})
+    #end_year=IntegerField('结束年份',[DataRequired()],render_kw={\
+    #                           "style":"width:70px"})
+    #end_month=IntegerField('结束月份',[DataRequired()],render_kw={\
+    #                   "style":"width:70px"})
     read_data_buttom=SubmitField('数据提取',render_kw={"style":"class:btn btn-primary"})
 
+class demand_forcast_algorithms():
+    """docstring for demand_forcast_algorithms"""
+    def arma_predict(self,data):
+        data=data.T
+        data.index = pd.Index(sm.tsa.datetools.dates_from_range('2014m1', '2017m9'))
+        result=pd.DataFrame(np.zeros([6,len(data.columns)]))
+        result.index = pd.Index(sm.tsa.datetools.dates_from_range('2017m10', '2018m3'))
+        for i in range(0,len(data.columns)):
+            arma_mod20 = sm.tsa.ARMA(data[i], (2,0)).fit(disp=False)
+            result[i]=arma_mod20.predict('2017m10', '2018m3', dynamic=True)
+        return result
 
 
