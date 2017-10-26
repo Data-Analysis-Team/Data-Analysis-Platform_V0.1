@@ -7,7 +7,7 @@ Created on Sat Aug 19 12:22:34 2017
 import random
 import scipy.stats as sts
 import pandas as pd
-from models import Demand_Forcast_dataload
+from models import Demand_Forcast_dataload,demand_forcast_algorithms
 
 import time
 from flask import Flask, jsonify,render_template,url_for,redirect,session
@@ -430,15 +430,15 @@ def RandForestRegress():
     cursor.execute(sql_y_train)
     y_train=[]
     temp=cursor.fetchall()
-    for (row,) in temp:y_train.append(row) #妈的鸡，查询出来带(,),这样一搞就没了，好神奇
+    for (row,) in temp:y_train.append(row) 
     db.close()
     rf=RandomForestRegressor()
     rf.fit(x_train,y_train)
     x_predict=x_train.copy()
     y_predict=rf.predict(x_predict)
     mse=sum((y_train-y_predict)**2)
-#    print(mse)
-#直接**2会报错：unsupported operand type(s) for ** or pow(): 'list' and 'int'
+
+
     R=1-math.sqrt(mse/sum(np.array(y_train)**2)) 
     joblib.dump(rf, "train_model_RF.m")
     result_txt=list(map(lambda x:str('%.5f' %x),rf.feature_importances_))
@@ -451,28 +451,25 @@ def RandForestRegress():
 
 @app.route('/Demand_Forcast',methods=['GET','POST'])   
 def Demand_Forcast():
-    global table1
+    history_data=pd.DataFrame()
+    result=pd.DataFrame()
     excel_form=Demand_Forcast_dataload()
     if excel_form.validate_on_submit():
         excel_path=excel_form.excel_path.data
-        start_year=excel_form.start_year.data
-        end_year=excel_form.end_year.data
-        start_month=excel_form.start_month.data
-        end_month=excel_form.end_month.data
+        excel_path=excel_path.replace('\\','/')
 
+        #start_year=excel_form.start_year.data
+        #end_year=excel_form.end_year.data
+        #start_month=excel_form.start_month.data
+        #end_month=excel_form.end_month.data
 
-        excel_path.replace('\\','/')
-        excel_data=pd.read_excel(excel_path)
-        
+        history_data=pd.read_excel(excel_path)
+        fix_history_data=history_data.drop(['预测层级'],axis=1)
+        forcast_models=demand_forcast_algorithms()
+        result=forcast_models.arma_predict(fix_history_data).T
+        result.index=history_data['预测层级']
 
-        tableCLs=create_table('data_lookup')
-        tableCLs.add_column('level', Col('预测层级'))
-        for i in range(0,len(data.columns)):
-            tableCLs.add_column(data.columns[i], Col(data.columns[i]))
-
-        table1=tableCLs(data)
-
-    return render_template('Demand_Forcast.html',form1=excel_form,table1=table1)
+    return render_template('Demand_Forcast.html',form1=excel_form,history_data=history_data,forcast_data=result)
 
         
         
@@ -502,6 +499,6 @@ def not_found(error):
 
 app.config['SECRET_KEY']='xxx'
 if __name__ == '__main__': 
-    app.run()
+    app.run(debug=True)
 
 
