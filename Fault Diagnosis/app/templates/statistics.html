@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %} 
+
+{% block content %}
+
+
+<!--<h4><span class="label label-info">数据库名:test1</span></h4>
+<h4><span class="label label-info">表名:table1</span></h4>-->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-11">
+			<div>{{ wtf.quick_form(form1) }}</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">描述性统计</h3>
+				</div>
+				<div class="panel-body">
+				    <div>
+				    	<table class="table table-striped">
+				    			<!-- <caption>描述性统计</caption>-->
+				    		<thead>
+				    			<tr>
+				    				<th>字段</th>
+				   					<th>有效数据</th>
+									<th>均值</th>
+									<th>标准差</th>
+					 				<th>最小值</th>
+									<th>最大值</th>
+									<th>下四分位数</th>
+									<th>中位数</th>
+									<th>上四分位数</th>
+									<th>离散系数</th>
+									<th>峰度</th>
+									<th>偏度</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>{{columns_name0}}</td>
+									<td>{{s1_0}}</td>
+									<td>{{s2_0}}</td>
+									<td>{{s3_0}}</td>
+									<td>{{s4_0}}</td>
+									<td>{{s5_0}}</td>
+									<td>{{s6_0}}</td>
+									<td>{{s7_0}}</td>
+									<td>{{s8_0}}</td>
+									<td>{{s9_0}}</td>
+									<td>{{s10_0}}</td>
+									<td>{{s11_0}}</td>
+								</tr>
+								<tr>
+									<td>{{columns_name1}}</td>
+									<td>{{s1_1}}</td>
+									<td>{{s2_1}}</td>
+									<td>{{s3_1}}</td>
+									<td>{{s4_1}}</td>
+									<td>{{s5_1}}</td>
+									<td>{{s6_1}}</td>
+									<td>{{s7_1}}</td>
+									<td>{{s8_1}}</td>
+									<td>{{s9_1}}</td>
+									<td>{{s10_1}}</td>
+									<td>{{s11_1}}</td>
+								</tr>
+								<tr>
+									<td>{{columns_name2}}</td>
+									<td>{{s1_2}}</td>
+									<td>{{s2_2}}</td>
+									<td>{{s3_2}}</td>
+									<td>{{s4_2}}</td>
+									<td>{{s5_2}}</td>
+									<td>{{s6_2}}</td>
+									<td>{{s7_2}}</td>
+									<td>{{s8_2}}</td>
+									<td>{{s9_2}}</td>
+									<td>{{s10_2}}</td>
+									<td>{{s11_2}}</td>
+								</tr>
+								<tr>
+									<td>{{columns_name3}}</td>
+									<td>{{s1_3}}</td>
+									<td>{{s2_3}}</td>
+									<td>{{s3_3}}</td>
+									<td>{{s4_3}}</td>
+									<td>{{s5_3}}</td>
+									<td>{{s6_3}}</td>
+									<td>{{s7_3}}</td>
+									<td>{{s8_3}}</td>
+									<td>{{s9_3}}</td>
+									<td>{{s10_3}}</td>
+									<td>{{s11_3}}</td>
+								</tr>
+								<tr>
+									<td>{{columns_name4}}</td>
+									<td>{{s1_4}}</td>
+									<td>{{s2_4}}</td>
+									<td>{{s3_4}}</td>
+									<td>{{s4_4}}</td>
+									<td>{{s5_4}}</td>
+									<td>{{s6_4}}</td>
+									<td>{{s7_4}}</td>
+									<td>{{s8_4}}</td>
+									<td>{{s9_4}}</td>
+									<td>{{s10_4}}</td>
+									<td>{{s11_4}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<ul class="nav nav-tabs" id="myTab">
+				<li class="active">
+					<a href="#bar" data-toggle="tab" > 频率分布直方图 </a>
+				</li>
+				<li>
+					<a href="#box" data-toggle="tab" > 箱线图 </a>
+				</li>
+			</ul>
+
+			<div class="tab-content">
+				<div class="tab-pane active" id="bar">
+	<!--<form role="form" method="post" action="" method="post">
+		<div class="form-group">
+			<label for="name">选择列表</label>
+				<select class="form-control">
+					<option>{{columns_name1}}</option>
+					<option>{{columns_name2}}</option>
+					<option>{{columns_name3}}</option>
+					<option>{{columns_name4}}</option>
+					<option>{{columns_name5}}</option>
+				</select>
+		</div>
+	</form>-->
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-8">{{ wtf.quick_form(form2) }}</div>
+						</div>
+						{{select_item}}
+					</div>
+					<div class="modal fade" id="myModal" >
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+								</div>
+								<div class="modal-body">
+								</div>
+							</div>
+						</div>
+					</div>
+					<a class="btn btn-primary" href="{{'hist'}}" data-toggle="modal" data-target="#myModal"> 绘图 </a>
+				</div>
+				<div class="tab-pane" id="box">...箱线图...</div>
+			</div>
+<!--<iframe name="ss" width=100% height=300  SRC="bar.html" ></IFRAME>-->
+		</div>
+		<div class="col-md-4">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">单变量间相关性分析</h3>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-6">
+							{{ wtf.quick_form(form3) }}
+							选择的因变量为：
+							{{Selected_X}}
+						</div>
+						<div class="col-md-6">
+							{{ wtf.quick_form(form4) }}
+							选择的自变量为：
+							{{Selected_Y}}
+							<form method="post">
+								{{form4.hidden_tag()}}
+								<select onchange=mysubmit()>
+									<option>{{form4.item3.choices[0][1]}}</option>
+									<option>{{form4.item3.choices[1][1]}}</option>
+								</select>
+							</form>
+						</div>
+					</div>
+					<div class="row">
+						{{pearson}}
+						<form method="post">
+							{{form_pearson.hidden_tag()}}					
+							{{form_pearson.submit_pearson(class="btn btn-primary")}}
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+<script type="text/javascript">
+$(function(){
+	$("#myTab a:last").tab("show");
+})
+$("#myTab a").click(function(e){
+e.preventDefault();
+$(this).tab("show")
+})
+
+$("#open").click(function(){
+	$("#myiframe").attr("src","bar.html");
+	$("#myModal").modal({show:true});
+})
+
+$('#myModal.modal-content').empty();
+$('#myModal').removeData('bs.modal').modal({
+remote:'xxx'})
+
+$(function() {
+    $('#myModal').modal('hide')
+});
+$(function() {
+    $('#myModal').on('hide.bs.modal',
+    function() {
+        alert('嘿，我听说您喜欢模态框...');
+    })
+});
+
+
+function mysubmit(){
+form4.submit3()}
+</script>

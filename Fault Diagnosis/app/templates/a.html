@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src=".static/echarts.min.js"></script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var option = {
+            "title": [
+        {
+            "text": "\u9891\u7387\u5206\u5e03\u76f4\u65b9\u56fe",
+            "subtext": "",
+            "left": "auto",
+            "top": "auto",
+            "textStyle": {
+                "color": "#000",
+                "fontSize": 18
+            },
+            "subtextStyle": {
+                "color": "#aaa",
+                "fontSize": 12
+            }
+        }
+    ],
+    "toolbox": {
+        "show": true,
+        "orient": "vertical",
+        "left": "95%",
+        "top": "center",
+        "feature": {
+            "saveAsImage": {
+                "show": true,
+                "title": "\u4e0b\u8f7d\u56fe\u7247"
+            },
+            "restore": {
+                "show": true
+            },
+            "dataView": {
+                "show": true
+            }
+        }
+    },
+    "series_id": 8766306,
+    "tooltip": {
+        "trigger": "item",
+        "triggerOn": "mousemove|click",
+        "axisPointer": {
+            "type": "line"
+        },
+        "formatter": null,
+        "textStyle": {
+            "color": "#fff",
+            "fontSize": 14
+        }
+    },
+    "series": [
+        {
+            "type": "line",
+            "name": "\u4e3b\u84b8\u6c7d\u6d41\u91cf",
+            "data": [
+                7.0,
+                23.0,
+                37.0,
+                21.0,
+                22.0,
+                27.0,
+                16.0,
+                32.0,
+                15.0
+            ],
+            "stack": "",
+            "barCategoryGap": "20%",
+            "label": {
+                "normal": {
+                    "show": false,
+                    "position": "top",
+                    "textStyle": {
+                        "color": "#000",
+                        "fontSize": 12
+                    },
+                    "formatter": null
+                },
+                "emphasis": {
+                    "show": true,
+                    "position": null,
+                    "textStyle": {
+                        "color": "#fff",
+                        "fontSize": 12
+                    }
+                }
+            },
+            "markPoint": {
+                "data": []
+            },
+            "markLine": {
+                "data": []
+            },
+            "seriesId": 8766306
+        }
+    ],
+    "legend": [
+        {
+            "data": [
+                "\u4e3b\u84b8\u6c7d\u6d41\u91cf"
+            ],
+            "selectedMode": "multiple",
+            "show": true,
+            "left": "center",
+            "top": "top",
+            "orient": "horizontal",
+            "textStyle": {
+                "fontSize": 12,
+                "color": "#333"
+            }
+        }
+    ],
+    "backgroundColor": "#fff",
+    "xAxis": [
+        {
+            "name": "",
+            "show": true,
+            "nameLocation": "middle",
+            "nameGap": 25,
+            "nameTextStyle": {
+                "fontSize": 14
+            },
+            "axisLabel": {
+                "interval": "auto",
+                "rotate": 0,
+                "margin": 8
+            },
+            "axisTick": {
+                "alignWithLabel": false
+            },
+            "inverse": false,
+            "position": null,
+            "boundaryGap": true,
+            "min": null,
+            "max": null,
+            "data": [
+                838.6,
+                844.2,
+                849.8,
+                855.4,
+                861.0,
+                866.6,
+                872.2,
+                877.8,
+                883.4
+            ],
+            "type": "category"
+        }
+    ],
+    "yAxis": [
+        {
+            "name": "",
+            "show": true,
+            "nameLocation": "middle",
+            "nameGap": 25,
+            "nameTextStyle": {
+                "fontSize": 14
+            },
+            "axisLabel": {
+                "formatter": "{value} ",
+                "rotate": 0,
+                "interval": "auto",
+                "margin": 8
+            },
+            "axisTick": {
+                "alignWithLabel": false
+            },
+            "inverse": false,
+            "position": null,
+            "boundaryGap": true,
+            "min": null,
+            "max": null,
+            "type": "value"
+        }
+    ],
+    "color": [
+        "#c23531",
+        "#2f4554",
+        "#61a0a8",
+        "#d48265",
+        "#749f83",
+        "#ca8622",
+        "#bda29a",
+        "#6e7074",
+        "#546570",
+        "#c4ccd3",
+        "#f05b72",
+        "#ef5b9c",
+        "#f47920",
+        "#905a3d",
+        "#fab27b",
+        "#2a5caa",
+        "#444693",
+        "#726930",
+        "#b2d235",
+        "#6d8346",
+        "#ac6767",
+        "#1d953f",
+        "#6950a1",
+        "#918597",
+        "#f6f5ec"
+    ]
+};
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+</body>
+</html>

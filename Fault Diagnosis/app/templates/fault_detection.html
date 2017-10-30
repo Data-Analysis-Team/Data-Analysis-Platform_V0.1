@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block head %}
+{{super()}}
+<script type="text/javascript" src="{{url_for('static',filename='echarts.min.js')}}"></script>
+{% endblock %}
+{% block content %}
+
+<div calss="page_header">
+	<h1>Hello,{% if name %}{{name}}{% else %}Stranger{% endif %}!</h1>
+</div>
+<div>{{ wtf.quick_form(form) }}</div>
+<div>
+	{{fault_data}}
+</div>
+<div>
+	<div id="main" style="width: 600px;height:400px;"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var option = {
+    title: {
+        text: '主元回归预测'
+    },
+    tooltip: {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['真实数据','预测数据']
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type : 'category',
+        boundaryGap : false,
+        data:{{X_data}}
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [
+        {
+            name:'真实数据',
+            type:'line',
+            data:{{Y_data}}
+        },
+        {
+            name:'预测数据',
+            type:'line',
+            
+            data:{{predict_data}}
+        },
+        
+    ]
+};
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+</div>
+{% endblock %}
+
