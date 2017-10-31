@@ -1,0 +1,48 @@
+
+{% extends "bootstrap/base.html" %} 
+<!--<link href="dist/js/bootstrap.min.css" rel="stylesheet">-->
+{% block title %}工业数据分析平台{% endblock %} 
+{% block navbar %} 
+<div class="navbar navbar-inverse" role="navigation"> 
+	<div class="container"> 
+		<div class="navbar-header"> 
+			<button type="button" class="navbar-toggle" 
+			data-toggle="collapse" data-target=".navbar-collapse"> 
+				<span class="sr-only"> Toggle navigation</span>
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+			</button>
+			<a class="navbar-brand" href="/"> 主页</a> 
+		</div> 
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+                <li><a href="{{url_for('main.fault_detection')}}">登录</a></li>
+            </ul>
+			<ul class="nav navbar-nav">
+                <li><a href="{{url_for('main.preprocess')}}">数据预处理</a></li>
+            </ul>
+			<ul class="nav navbar-nav">
+                <li><a href="{{url_for('main.statistics')}}">统计分析</a></li>
+            </ul>
+			<ul class="nav navbar-nav">
+                <li><a href="{{url_for('main.feature')}}">特征处理</a></li>
+            </ul>
+			<ul class="nav navbar-nav">
+                <li><a href="{{url_for('main.regression')}}">回归</a></li>
+            </ul>
+            <ul class="nav navbar-nav">
+                <li><a href="{{url_for('main.fault_detection')}}">故障预警</a></li>
+            </ul>
+        </div>
+	</div> 
+ </div> 
+ {% endblock %}
+ 
+ {% block content %}
+ <div class="container"> 
+	{% block page_content %}{% endblock %}
+	<!--<script src="dist/js/jquery.min.js"></script>-->
+    <!--<script src="dist/js/bootstrap.min.js"></script>-->
+ </div> 
+ {% endblock %}
