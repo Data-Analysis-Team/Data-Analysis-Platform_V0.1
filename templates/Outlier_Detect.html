@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %} 
+
+{% block page_content %}
+<div>
+	{{wtf.quick_form(form1)}}
+</div>
+<div>
+	<p style="text-align:center">异常点检测</p>
+</div>
+<div class="table-responsive">
+{{ outlier_detect_result.to_html(classes="table table-striped table-hover ") | safe}}
+</div>
+{% endblock %}
