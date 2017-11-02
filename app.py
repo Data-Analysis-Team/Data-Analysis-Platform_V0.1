@@ -7,7 +7,7 @@ Created on Sat Aug 19 12:22:34 2017
 import random
 import scipy.stats as sts
 import pandas as pd
-from models import Demand_Forcast_dataload,demand_forcast_algorithms
+from models import Demand_Forcast_dataload,demand_forcast_algorithms,outlier_detect_dataload
 
 import time
 from flask import Flask, jsonify,render_template,url_for,redirect,session
@@ -430,15 +430,15 @@ def RandForestRegress():
     cursor.execute(sql_y_train)
     y_train=[]
     temp=cursor.fetchall()
-    for (row,) in temp:y_train.append(row) 
+    for (row,) in temp:y_train.append(row) #妈的鸡，查询出来带(,),这样一搞就没了，好神奇
     db.close()
     rf=RandomForestRegressor()
     rf.fit(x_train,y_train)
     x_predict=x_train.copy()
     y_predict=rf.predict(x_predict)
     mse=sum((y_train-y_predict)**2)
-
-
+#    print(mse)
+#直接**2会报错：unsupported operand type(s) for ** or pow(): 'list' and 'int'
     R=1-math.sqrt(mse/sum(np.array(y_train)**2)) 
     joblib.dump(rf, "train_model_RF.m")
     result_txt=list(map(lambda x:str('%.5f' %x),rf.feature_importances_))
@@ -453,25 +453,98 @@ def RandForestRegress():
 def Demand_Forcast():
     history_data=pd.DataFrame()
     result=pd.DataFrame()
+    regress_error=pd.DataFrame()
     excel_form=Demand_Forcast_dataload()
     if excel_form.validate_on_submit():
         excel_path=excel_form.excel_path.data
         excel_path=excel_path.replace('\\','/')
 
-        #start_year=excel_form.start_year.data
-        #end_year=excel_form.end_year.data
-        #start_month=excel_form.start_month.data
-        #end_month=excel_form.end_month.data
+        start_year=excel_form.start_year.data#数据开始和结束时间
+        end_year=excel_form.end_year.data
+        start_month=excel_form.start_month.data
+        end_month=excel_form.end_month.data
+        forcast_method=excel_form.selected_method.data
 
-        history_data=pd.read_excel(excel_path)
+        history_data=pd.read_excel(excel_path)#加载数据
         fix_history_data=history_data.drop(['预测层级'],axis=1)
-        forcast_models=demand_forcast_algorithms()
-        result=forcast_models.arma_predict(fix_history_data).T
-        result.index=history_data['预测层级']
-
-    return render_template('Demand_Forcast.html',form1=excel_form,history_data=history_data,forcast_data=result)
-
         
+        if forcast_method=='ARMA_METHOD':
+            forcast_models=demand_forcast_algorithms()
+            result,regress_error=forcast_models.arma_predict(fix_history_data,start_year,start_month,end_year,end_month,excel_form.forcast_number.data)
+            result.index=history_data['预测层级']
+            regress_error.index=history_data['预测层级']
+            regress_error.columns=['拟合误差']
+
+        elif forcast_method=='DEPOSE_PLUS_METHOD':
+        	fix_history_data=fix_history_data.values
+        	forcast_models=demand_forcast_algorithms()
+        	result,regress_error,predict_time_period=forcast_models.plus_forcast_model(fix_history_data,start_year,start_month,end_year,end_month,excel_form.forcast_number.data)
+            
+        	regress_error.index=history_data['预测层级']
+        	regress_error.columns=['拟合误差']
+        	
+        	result.columns=predict_time_period
+        	result.index=history_data['预测层级']
+
+        elif forcast_method=='DEPOSE_MUL_METHOD':
+            fix_history_data=fix_history_data.values
+            forcast_models=demand_forcast_algorithms()
+            result,regress_error,predict_time_period=forcast_models.multiply_forcast_model(fix_history_data,start_year,start_month,end_year,end_month,excel_form.forcast_number.data)
+            regress_error.index=history_data['预测层级']
+            regress_error.columns=['拟合误差']            
+            
+            result.columns=predict_time_period
+            result.index=history_data['预测层级']
+        else: pass
+    return render_template('Demand_Forcast.html',form1=excel_form,history_data=history_data,forcast_data=result,regress_result=regress_error)
+
+@app.route('/Outlier_Detect',methods=['GET','POST'])
+def Outlier_Detect():
+	Detect_Result=pd.DataFrame(columns=['异常层次','异常月份','异常数值','建议数值'])
+	excel_form=outlier_detect_dataload()
+	if excel_form.validate_on_submit():
+		excel_path=excel_form.excel_path.data
+		excel_path=excel_path.replace('\\','/')
+		out_percent=excel_form.out_percent.data#上下限百分比
+		start_year=excel_form.start_year.data#数据开始和结束时间
+		end_year=excel_form.end_year.data
+		start_month=excel_form.start_month.data
+		end_month=excel_form.end_month.data
+		history_data=pd.read_excel(excel_path)#加载数据
+		fix_data=np.array(history_data.drop(['预测层级'],axis=1))
+		smooth_data=np.zeros_like(fix_data)
+		for i in range(0,fix_data.shape[0]):
+			for j in range(0,fix_data.shape[1]):
+				if j==0:
+					smooth_data[i,j]=(fix_data[i,j]+fix_data[i,j+1])/2
+				elif j==fix_data.shape[1]-1:
+					smooth_data[i,j]=(fix_data[i,j]+fix_data[i,j-1])/2
+				else:
+					smooth_data[i,j]=(fix_data[i,j]+fix_data[i,j-1]+fix_data[i,j+1])/3
+
+		up_limt=np.zeros_like(fix_data)
+		low_limit=np.zeros_like(fix_data)
+		up_limt=smooth_data*(1+out_percent)
+		low_limit=smooth_data*(1-out_percent)
+		k=0
+		for i in range(0,fix_data.shape[0]):
+			for j in range(0,fix_data.shape[1]):
+				current_month=start_month+j
+				if current_month<=12:
+					year_add=0
+				else: 
+					year_add=current_month//12
+					current_month=current_month%12
+				current_year=start_year+year_add
+				if fix_data[i,j]>up_limt[i,j]:
+					Detect_Result.loc[k]={"异常层次":history_data['预测层级'][i],"异常月份":str(current_year)+'m'+str(current_month),"异常数值":fix_data[i,j],"建议数值":up_limt[i,j]}
+					k+=1
+				if fix_data[i,j]<low_limit[i,j]:
+					Detect_Result.loc[k]={"异常层次":history_data['预测层级'][i],"异常月份":str(current_year)+'m'+str(current_month),"异常数值":fix_data[i,j],"建议数值":up_limt[i,j]}
+					k+=1
+    
+	return render_template('Outlier_Detect.html',form1=excel_form,outlier_detect_result=Detect_Result)
+
         
 
 @app.route('/test',methods=['POST'])
